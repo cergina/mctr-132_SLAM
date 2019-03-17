@@ -1,0 +1,5 @@
+<launch>
+	<node pkg="mctr-132_laser" type="scan.py" name="scan_values" output="screen">
+	
+	</node>
+</launch>

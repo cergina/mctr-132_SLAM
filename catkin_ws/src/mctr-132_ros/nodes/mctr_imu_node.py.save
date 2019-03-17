@@ -1,0 +1,58 @@
+#!/usr/bin/env python
+
+import os, sys
+import serial
+import time
+import rospy
+from std_msgs.msg import String
+from sensor_msgs.msg import Imu
+
+ser = serial.Serial('/dev/ttyACM0', 115200, timeout = 6)
+
+
+def convert(s):			#try to change the string into float value
+	try:
+		return float(s)
+	except ValueError:
+		return s
+
+def split_imu_array():
+	imu_string = ser.readline()
+	imu_string = imu_string.rstrip()
+	old = imu_string.split(", ")
+	new = [convert(i) for i in old]
+	return new
+
+def publisheris():
+	print("Giving the board 5 seconds to boot")
+	#rospy.sleep(5)
+	time1 = -1 #time1 == -1 => first reading
+	time2 = -1 #time1 != -1 && time2 == -1 => second reading
+	delta = -1 #time1 != -1 && time2 != -1 => time2 - time1 
+	pub = rospy.Publisher('', String, queue_size=1)
+	rospy.init_node('publisheris', anonymous=True)
+	# 1-100Hz
+	rate = rospy.Rate(1)
+	#fill time2 before loop
+	numbers = split_imu_array()
+	time2 = numbers[0]
+	rate.sleep()
+	while not rospy.is_shutdown():
+		numbers = split_imu_array()
+		print(numbers)
+		time1 = time2
+		time2 = numbers[0]
+		delta = time2 - time1
+		print("Time delta: " + str(delta))
+		#rospy.loginfo(imu_string)
+		#pub.publish(imu_string)
+		#static_transform_publisher x y z qx qy qz qw frame_id child_frame_id period_ms
+
+		rate.sleep()
+
+if __name__ == '__main__':
+	try:
+		publisheris()
+	except rospy.ROSInterruptException:
+		pass
+
