@@ -40,7 +40,7 @@ def handle_pose(msg):
 		(data_imu.orientation.x, data_imu.orientation.y,
 			data_imu.orientation.z, data_imu.orientation.w,),
 		rospy.Time.now(),
-		"laser",
+		"laser_link",
 		"map"
 	)
 
