@@ -19,7 +19,7 @@ def provide_help():
 	print("[-a]:		Debug")
 	print("l 		Level (int)")
 	print("n		Position  (int)")
-	print("[pr]		Tolerance (float), default is: 0.04")
+	print("[pr]		Tolerance (float), default is: 0.1")
 
 
 def show_all(msg):
@@ -169,7 +169,7 @@ def vector_to_use(level, chosen_arrow, offset):
 		15: [ 1.0 , -1.0 ,0.0],	 # right in 315degrees
 		
 		16: [ 1.0 , 0.0 , 1.0],  #up level, head
-		17: [ 1.0, 1.0, 1.0],    # right in 45degrees
+                17: [ 1.0, 1.0, 1.0],    # right in 45degrees
 		18: [ 0.0 , 1.0 , 1.0],   # right in 90degrees
 		19: [ -1.0 , 1.0 , 1.0],   # right in 135degrees
 		20: [ -1.0 , 0.0 , 1.0],   # right in 180degrees
@@ -182,50 +182,25 @@ def vector_to_use(level, chosen_arrow, offset):
 	vector_num = level * 8 + chosen_arrow
 	
 	to_return = switcher.get((level*8 + chosen_arrow))
-	#x = to_return[0] + (-1 * offset[0])
-	x = to_return[0] + (offset[0])
-	#y = to_return[1] + (-1 * offset[1])
-	y = to_return[1] + (offset[1])
-	#z = to_return[2] + (-1 * offset[2])
-	z = to_return[2] + (offset[2])
+	
+	# calculate vector size
+	v_size = math.sqrt(offset[0]*offset[0] + offset[1]*offset[1] + offset[2]*offset[2])
 
-	return [x, y, z]
+	# make a new offset vector of size 1
+	offset = [offset[0]/v_size, offset[1]/v_size, offset[2]/v_size]
 
-# BACKUP
-# WHICH vector: level[0-2], chosen_arrow[0-7]
-#
-#def vector_to_use(level, chosen_arrow):
-#	switcher = {
-#		0: [ 0.1 , 0.5 ,0.5],
-#		1: [ 0.2 , 0.5 ,0.5],
-#		2: [ 0.3 , 0.5 ,0.5],
-#		3: [ 0.4 , 0.5 ,0.5],
-#		4: [ 0.5 , 0.5 ,0.5],
-#		5: [ 0.6 , 0.5 ,0.5],
-#		6: [ 0.7 , 0.5 ,0.5],
-#		7: [ 0.8 , 0.5 ,0.5],
-#		8: [ 0.5 , 0.1 ,0.5],
-#		9: [ 0.5, 0.2 ,0.5],
-#		10: [ 0.5 , 0.3 ,0.5],
-#		11: [ 0.5 , 0.4 ,0.5],
-#		12: [ 0.5 , 0.5 ,0.5],
-#		13: [ 0.5 , 0.6 ,0.5],
-#		14: [ 0.5 , 0.7 ,0.5],
-#		15: [ 0.5 , 0.8 ,0.5],
-#		16: [ 0.5 , 0.5 ,0.1],
-#		17: [ 0.5 , 0.5,0.2],
-#		18: [ 0.5 , 0.5 ,0.3],
-#		19: [ 0.5 , 0.5 ,0.4],
-#		20: [ 0.5 , 0.5 ,0.5],
-#		21: [ 0.5 , 0.5 ,0.6],
-#		22: [ 0.5 , 0.5 ,0.7],
-#		23: [ 0.5 , 0.5 ,0.8],
-#	}
-#
-#	# eg.: level 1, 6th arrow 1*8 + 6 = 14
-#	vector_num = level * 8 + chosen_arrow
-#	
-#	return switcher.get((level*8 + chosen_arrow))
+	# missing part of the angle to compensate [1,0,0] to [off[x],off[y],0]
+	angle_miss = math.atan(abs(offset[0])/abs(offset[1]))
+
+	# angle
+	angle = math.radians(90) + angle_miss
+
+	# calculate new offset
+	new_x = to_return[0]*math.cos(angle) - to_return[1]*math.sin(angle)
+	new_y = to_return[0]*math.sin(angle) + to_return[1]*math.cos(angle)
+	new_z = to_return[2]
+
+	return [new_x, new_y, new_z]
 
 
 #
@@ -253,7 +228,7 @@ if __name__ == '__main__':
 			sys.exit()
 	
 		# user wants to specify also the precision resolution if arg_count > 4
-		def_precision = "0.04"
+		def_precision = "0.1"
 		pr = None
 	
 		if (arg_count > 3):
@@ -279,11 +254,14 @@ if __name__ == '__main__':
 		# get the vector MAROS. The offset is a hope, that's static offset 
 		# which does not change over time. needs to be tested and hopefuly it
 		# will work for every direction
-		a = vector_to_use(l,n, [0,0,0])
+		a = vector_to_use(l,n, [-0.675,1.425,-0.075])
 
 		if (a == "nothing"):
 			incorrect_arguments()
 			sys.exit()
+					
+		# print the vector it's going to be used to get the distance
+		print("X[" + str(a[0]) + "], Y[" + str(a[1]) + "], Z[" + str(a[2]) + "]\n\r")
 
 		# all-zero vector is not supported
 		if (a[0] == 0 and a[1] == 0 and a[2] == 0):
