@@ -1,0 +1,7 @@
+roscore
+roslaunch razor_imu_9dof razor-pub.launch
+rosrun mctr-132_ros tf_broadcaster.p
+rosrun rplidar_ros rplidar.launch //ci jako
+roslaunch mctr-132_laser laser.launch
+roslaunch octomap_server octomap_mapping.launch
+rosrun rviz rviz

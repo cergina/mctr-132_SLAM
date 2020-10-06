@@ -1,0 +1,45 @@
+https://aaltodoc.aalto.fi/bitstream/handle/123456789/32426/master_Leporcq_Johnny_2018.pdf?sequence=1&isAllowed=y
+str. 21
+-kalibracia senzorov musi nastat zakazdym co sa senzor nastartuje, pretoze sa menia odchylky v senzoroch. 
+-senzory su tiez nachylne na zmeny v teplotach
+
+~grafy k sumu:
+rosrun plotjuggler PlotJuggler zobrazuje grafy
+v UX na Desktop/ su 3 subory
+imu_sikmo.xml - vo zveraku, fotka 1, 2019-03-11-00-24-19.bag
+imu_sibemu.xml - vo zveraku, fotka 2 2019-03-11-00-25-59.bag
+imu_nesibealeajtak.xml - vo zveraku, 2019-03-11-00-48-33.bag
+
+Prvy subor nicim zvlastny, testovacia sikma poloha akurat
+V druhych dvoch je pozicia rovnaka, ale v jednom tomu sibe a v druhom nie.
+~Odchylky su stale
+Q: cital som, ze kalibraciu treba vykonat pri kazdom spusteni IMU, ale jedina moznost ako ja mam moznost tam dat kalibraciu je vlozit tam staticke hodnoty a tie odcitat od nameranych dat... (kedze mi nejde Razor AHRS)
+
+
+
+~data su z topicu /imu:
+quaterniony sa ziskavaju priamo z IMU bez dalsich prepoctov
+linearna acceleracia je tiez z IMU
+angular velocity je tiez z IMU
+
+v mojom skripte "rosrun mctr-132_ros mctr_imu_node.py" vypisujem dva riadky: 
+~before: klasika udaje z IMU, (obsahuje zemsku G)
+~after: (neobsahuje G, vychadza z quaternionov, ale nefunguje napriklad v bocnej/zvislej polohe) autor myslienky Fabio Varesano zial uz v 2013 zomrel...
+
+node: http://wiki.ros.org/robot_pose_ekf
+data z imu by boli, chce to vsak Odometry. Najprv by sa vyskusal "iba" odom, kedy to bude brat len 2D pose
+Q: 
+http://docs.ros.org/api/nav_msgs/html/msg/Odometry.html
+Odometry ale obsahuje zvlastne parametre:
+
+Pose : ok
+	Position (x,y,z) ok
+	Quaternion (x,y,z,w) (cca...)
+Covariance 6x6 ??
+
+
+Twist
+	Twist
+		linear x,y,z (vector)
+		angular x,y,z (vector)
+	Covariance 6x6 ??

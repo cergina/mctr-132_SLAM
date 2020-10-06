@@ -1,0 +1,22 @@
+tu je spisany navod ako spustit RPLidar
+
+source catkin_ws/devel/setup.bash
+roscore
+cd catkin_ws/src/rplidar_ros/launch
+roslaunch view_rplidar.launch
+
+alebo
+
+roslaunch rplidar_ros rplidar.launch
+rosrun rplidar_ros rplidarNodeClient
+
+z rplidar.launch:
+node name "rplidarNode"
+
+z view_rplidar.launch:
+node name = "rviz", pkg="rviz"
+args= "-d $(find rplidar_ros)/rviz/rplidar.rviz"
+
+z rplidar.rviz:
+
+

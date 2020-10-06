@@ -1,0 +1,7 @@
+ako spustit IMU Razor SparkFun 9DOF
+
+roscore
+
+roslaunch razor_imu_9dof razor-pub.launch
+
+rostopic echo /imu

@@ -1,0 +1,25 @@
+sudo apt-get install ros-indigo-octomap
+ros-indigo-octomap-mapping
+ros-indigo-octomap-msgs
+ros-indigo-octomap-ros
+ros-indigo-octomap-rviz-plugins
+ros-indigo-octomap-server
+
+len nahrad indigo verziou kinetic
+
+http://wiki.ros.org/action/fullsearch/octomap_server?action=fullsearch&context=180&value=linkto%3A%22octomap_server%22
+http://www.theconstructsim.com/read-laserscan-data/?utm_source=youtube&utm_medium=ros_qa&utm_campaign=31
+https://gist.github.com/lucasw/ea04dcd65bc944daea07612314d114bb
+http://docs.ros.org/api/sensor_msgs/html/msg/PointCloud2.html
+http://docs.ros.org/api/sensor_msgs/html/msg/LaserScan.html
+https://answers.ros.org/question/137186/storing-pointcloud2-type-msgs-in-an-octomap/
+http://www.theconstructsim.com/read-laserscan-data/
+http://wiki.ros.org/pointcloud_to_laserscan
+
+roscore
+rosrun tf stic_transform_publisher 0 0 0 0 0 0 map laser 10
+roslaunch rplidar_ros rplidar.launch
+roslaunch mctr-132_laser laser.launch
+roslaunch octomap_server octomap_mapping.launch (nastaveny mnou)
+rosrun rviz rviz
+

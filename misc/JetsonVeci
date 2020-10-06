@@ -1,0 +1,54 @@
+#Ked spustame ROSCORE na jednej masine:
+#1. uprava ~/.basrhc suboru 
+source catkin_ws/devel/setup.bash
+export ROS_HOSTNAME=localhost
+export ROS_MASTER_URI=http://localhost:11311
+
+
+#zvysenie vykonu jetsona
+#spustenie nvidia skriptu
+sudo /home/nvidia/jetson_clocks.sh --store
+#obnovenie clocks
+sudo /home/nvidia/jetson_clocks.sh --restore
+
+
+#priebeh kalibracie senzorov:
+#na notebooku si otvorime Razor AHRS,
+# podla navodu na wiki.ros.org/razor_imu_9dof
+#nakalibrujeme acelerometer a gyroskop
+#postup kalibracie magnetometra:
+#stiahnutie verzie processing 2.2.1 (su aj novsie ale testovali na 2.* posledne)
+#./processing 
+#v ~/sketchbook/EJML/library/EJML.jar
+#restartuj ./processing
+#otvor si ten skript z razor imu 9dof src 
+#spusti magnetometer calibration
+#postupuj podla navodu
+#pohybuj nim
+#udaje zospodu vloz do Razor AHRS ino a nahraj na dosku z NTB
+#pouzivaj z jetson imu
+#magnetometer je tak ruseny ze processing nezobrazuje ani celu gulu na obrazovke
+
+#vytvorenie a zobrazenie tf stromu
+rosrun tf view_transforms
+evince frames.pdf
+
+#start 3D
+roscore
+roslaunch razor_imu_9dof razor-pub.launch
+rosrun mctr-132_ros tf_broadcaster.py
+roslaunch rplidar_ros rplidar.launch //ci jako
+roslaunch mctr-132_laser laser.launch
+roslaunch octomap_server octomap_mapping.launch
+rosrun rviz rviz
+
+#start nahravania 
+cd ~/bagfiles
+rosbag record -a	#records all topics
+rosbag play -l [subor] #playsback in loop the recorded topics
+
+#extrakcia mapy za behu programu
+rosrun mctr-132_ros map_builder.py
+
+#
+

@@ -1,0 +1,11 @@
+https://answers.ros.org/question/253196/roslaunch-error-rplidar/
+
+IMU port na notebooku: ttyACM0
+LIDAR port: ttyUSB0
+
+pridanie povoleni: http://playground.arduino.cc/Linux/All#Permission
+
+https://learn.sparkfun.com/tutorials/9dof-razor-imu-m0-hookup-guide/all#installing-the-9dof-razor-arduino-core
+
+https://github.com/KristofRobot/razor_imu_9dof
+http://wiki.ros.org/razor_imu_9dof
